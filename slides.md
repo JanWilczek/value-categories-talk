@@ -579,3 +579,66 @@ PRINT_VALUE_CATEGORY(std::move(x)); // xvalue
 PRINT_VALUE_CATEGORY(static_cast<int&&>(x)); // xvalue
 ```
 
+---
+
+# Value categories classification
+
+<img src="/assets/value_categories_classification.png" />
+
+---
+
+# Applications
+
+---
+
+# Move semantics (C++11)
+
+```cpp
+void foo(const Lifetime&) {
+	std::println("const&");
+}
+
+void foo(Lifetime&) {
+	std::println("&");
+}
+
+void foo(Lifetime&&) {
+	std::println("&&");
+}
+
+int main() {
+	Lifetime l{"bar"};
+	foo(std::move(l));
+	foo(Lifetime{"baz"});
+}
+```
+
+---
+
+# Forwarding reference (C++11)
+
+```cpp
+template <typename T>
+void foo(T&& forwarding_ref) {}
+
+int i = 1;
+foo(i); // calls foo<int&>(int&)
+foo(0); // calls foo<int>(int&&)
+foo(std::move(i)); // calls foo<int>(int&&)
+```
+
+
+---
+
+# Simpler forwarding reference syntax (C++17)
+
+```cpp
+template <typename T>
+void foo(T&& forwarding_ref) {}
+
+void foo_cpp17(auto&& forwarding_ref) {}
+```
+
+---
+
+
