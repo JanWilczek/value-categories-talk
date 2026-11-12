@@ -222,11 +222,9 @@ std::decay_t<decltype(1+2)> i = 1 + 2;
 
 ---
 
-# Expression type is never a reference, `const`, or `volatile`
+# Expression type is never a reference
 
 > "If an expression initially has the type “reference to T”, the type is adjusted to T prior to any further analysis; the value category of the expression is not altered."
-
-> "If a prvalue initially has the type “cv T”, where T is a cv-unqualified non-class, non-array type, the type of the expression is adjusted to T prior to any further analysis."
 
 ---
 
@@ -310,7 +308,7 @@ struct value_category_t<T&&> {
 template <typename T>
 constexpr auto value_category = value_category_t<T>::name;
 
-#define PRINT_VALUE_CATEGORY(E) std::println("{}: {}", #E, value_category<decltype((E))> // unevaluated
+#define PRINT_VALUE_CATEGORY(E) std::println("{}: {}", #E, value_category<decltype((E))>) // unevaluated
 ```
 
 ---
@@ -409,7 +407,7 @@ S* stemp_addr = &S{}; // error: taking address of rvalue (GCC) | error C2102: '&
 
 ---
 
-# We can only take the address of an lvalue
+# Only an lvalue can bind to a non-const lvalue reference
 
 ````md magic-move
 ```cpp
@@ -547,7 +545,7 @@ a_constref = 2; // error, although a_constref is an lvalue
 ```cpp
 int x = 2;
 1 = x; // error: lvalue required as left operand of assignment (GCC) 
-       // error: lvalue required as left operand of assignment (MSVC)
+       // error C2106: '=': left operand must be l-value (MSVC)
 ```
 
 ---
@@ -710,7 +708,7 @@ namespace detail {
 
 # Reference collapsing
 
-<img src="./assets/reference_collapsing.png" />
+<img src="./assets/reference_collapsing.png" width="70%" />
 
 ---
 
@@ -811,7 +809,7 @@ int main() {
 	safe_move(j_ref); // compile error: lvalue reference
 	safe_move(std::move(j)); // compile error: already an rvalue
 	int&& j_ref_ref = std::move(j);
-	safe_move(j_ref_ref)); // OK, because an lvalue
+	safe_move(j_ref_ref); // OK, because an lvalue
 }
 ```
 
@@ -823,4 +821,57 @@ int main() {
 * `tc_move_always_even_const()`
 
 ---
+layout: cover
+---
 
+# Relocating prvalues
+
+---
+
+```cpp
+template <typename T> decltype(auto) id(T&& t) { return std::forward<T>(t); }
+
+auto&& a = id(std::move(x)); // ✅
+auto&& b = id(make_vec());   // ❌
+```
+
+---
+
+# `tc::temporary`
+
+```cpp
+template <typename T, unsigned Lifetime>
+struct temporary {
+  T&& m_ref;
+  ...
+};
+```
+
+---
+
+# `tc::temporary`
+
+```cpp
+template <typename T>
+using prvalue_as_temporary_t = std::conditional_t<
+    std::is_reference<T>::value || tc::instance_tn<T, tc::temporary>, T, tc::temporary<T, 0>>;
+
+#define tc_prvalue_as_temporary(...) \
+  static_cast<tc::prvalue_as_temporary_t<decltype((__VA_ARGS__))>>(__VA_ARGS__)
+```
+
+---
+
+# Summary
+
+<v-clicks>
+
+* lvalue: something we can take the address of
+* prvalue: temporary
+* xvalue: unnamed rvalue reference
+* `decltype(x)` returns the type `x` was declared with
+* `decltype((x))` returns `T`, `T&`, or `T&&`, if expression `x` is a prvalue, lvalue, or an xvalue respectively
+* It's worth understanding value categories to read th C++ standard
+* Apply to thinkcell!
+
+</v-clicks>
