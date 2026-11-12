@@ -163,7 +163,7 @@ static_assert(std::same_as<Lifetime const&, decltype(my_invoke_good(foo))>); // 
 
 # Examples of C++ expressions
 
-<!-- Sandeep Mantrala slide -->
+<img src="/assets/expression_examples.png" />
 
 ---
 
@@ -327,6 +327,9 @@ int main() {
 }
 ```
 
+---
+
+# Object access in C++
 
 ```asm
 s$ = 8
@@ -377,7 +380,7 @@ mov DWORD PTR k$[rsp], eax
 
 Something we can take the address of.
 
-````md maagic-move
+````md magic-move
 ```cpp
 S s{};
 S* s_addr = &s;
@@ -403,13 +406,15 @@ static_assert(std::same_as<int&, decltype((i))>); // lvalue
 int i = 0;
 static_assert(std::same_as<int&, decltype((i))>); // lvalue
 
-S& s_ref = S{}; // error: cannot bind non-const lvalue reference of type 'S&' to an rvalue of type 'S' (GCC) | A non-const reference may only be bound to an lvalue (MSVC)
+S& s_ref = S{}; // error: cannot bind non-const lvalue reference of type 'S&' to an rvalue of type 'S' (GCC) 
+				// A non-const reference may only be bound to an lvalue (MSVC)
 ```
 ```cpp
 int i = 0;
 static_assert(std::same_as<int&, decltype((i))>); // lvalue
 
-S& s_ref = S{}; // error: cannot bind non-const lvalue reference of type 'S&' to an rvalue of type 'S' (GCC) | A non-const reference may only be bound to an lvalue (MSVC)
+S& s_ref = S{}; // error: cannot bind non-const lvalue reference of type 'S&' to an rvalue of type 'S' (GCC) 
+				// A non-const reference may only be bound to an lvalue (MSVC)
 
 S const& s_constref = S{}; // temporary lifetime extension
 ```
@@ -527,7 +532,8 @@ a_constref = 2; // error, although a_constref is an lvalue
 
 ```cpp
 int x = 2;
-1 = x; // error: lvalue required as left operand of assignment (GCC) | error: lvalue required as left operand of assignment (MSVC)
+1 = x; // error: lvalue required as left operand of assignment (GCC) 
+       // error: lvalue required as left operand of assignment (MSVC)
 ```
 
 ---
@@ -585,6 +591,8 @@ PRINT_VALUE_CATEGORY(static_cast<int&&>(x)); // xvalue
 
 <img src="/assets/value_categories_classification.png" />
 
+---
+layout: cover
 ---
 
 # Applications

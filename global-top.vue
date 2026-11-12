@@ -2,12 +2,11 @@
 <template>
   <img
     v-if="$nav.currentLayout !== 'cover'"
-    class="absolute top-4 right-4 w-32 h-auto pointer-events-none" src="./assets/thinkcell_logo_RGB.svg" alt="thinkcell logo"/>
+    class="absolute top-4 right-4 w-32 h-auto pointer-events-none" src="./assets/thinkcell_logo_color_RGB.svg" alt="thinkcell logo"/>
 
   <footer
     v-if="$nav.currentLayout !== 'cover' && $nav.currentLayout !== 'image'"
   >
-    <Scroll/>
     <div class="absolute bottom-5 left-0 right-5 text-right text-xs"><SlideCurrentNo/>/<SlidesTotal/></div>
     <div class="progress-track" aria-hidden="true">
       <div
