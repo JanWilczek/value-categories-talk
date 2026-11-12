@@ -300,3 +300,212 @@ int main() {
 }
 ```
 
+
+```asm
+s$ = 8
+; ...
+mov DWORD PTR s$[rsp], 1
+mov DWORD PTR s$[rsp+4], 2
+
+i$ = 0
+j$ = 4
+; ...
+; initialize i
+mov eax, DWORD PTR s$[rsp]
+mov DWORD PTR i$[rsp], eax
+
+; initialize j
+mov eax, DWORD PTR s$[rsp+4]
+mov DWORD PTR j$[rsp], eax
+```
+
+---
+
+# Object access in C++
+
+```cpp
+struct S {
+	int one = 1;
+	int two = 2;
+};
+
+int main() {
+    auto k = S{}.two;
+}
+```
+
+
+```asm
+$T1 = 24
+; ...
+mov DWORD PTR $T1[rsp], 1
+mov DWORD PTR $T1[rsp+4], 2
+mov eax, DWORD PTR $T1[rsp+4]
+mov DWORD PTR k$[rsp], eax
+```
+
+---
+
+# lvalue
+
+Something we can take the address of.
+
+````md maagic-move
+```cpp
+S s{};
+S* s_addr = &s;
+```
+```cpp
+S s{};
+S* s_addr = &s;
+
+S* stemp_addr = &S{}; // error: taking address of rvalue (GCC) | error C2102: '&' requires l-value (MSVC)
+```
+````
+
+---
+
+# We can only take the address of an lvalue
+
+````md magic-move
+```cpp
+int i = 0;
+static_assert(std::same_as<int&, decltype((i))>); // lvalue
+```
+```cpp
+int i = 0;
+static_assert(std::same_as<int&, decltype((i))>); // lvalue
+
+S& s_ref = S{}; // error: cannot bind non-const lvalue reference of type 'S&' to an rvalue of type 'S' (GCC) | A non-const reference may only be bound to an lvalue (MSVC)
+```
+```cpp
+int i = 0;
+static_assert(std::same_as<int&, decltype((i))>); // lvalue
+
+S& s_ref = S{}; // error: cannot bind non-const lvalue reference of type 'S&' to an rvalue of type 'S' (GCC) | A non-const reference may only be bound to an lvalue (MSVC)
+
+S const& s_constref = S{}; // temporary lifetime extension
+```
+````
+
+<!-- Evaluating expression results in an rvalue/lvalue -> ... is lvalue/rvalue -->
+
+---
+
+# lvalue examples
+
+```cpp
+int b = 1;
+PRINT_VALUE_CATEGORY(b); // lvalue
+int& b_ref = b;
+PRINT_VALUE_CATEGORY(b_ref); // lvalue
+int&& b_ref_ref = std::move(b);
+PRINT_VALUE_CATEGORY(b_ref_ref); // lvalue!
+```
+
+<v-clicks>
+
+> "(...) named rvalue references are treated as lvalues and unnamed rvalue references to objects are treated as xvalues; rvalue references to functions are treated as lvalues whether named or not."
+
+```cpp
+assert(&b == &b_ref_ref);
+```
+
+</v-clicks>
+
+---
+
+# lvalue examples - pointers
+
+```cpp
+S s{};
+S* p = &s;
+PRINT_VALUE_CATEGORY(p); // lvalue
+PRINT_VALUE_CATEGORY(*p); // lvalue
+PRINT_VALUE_CATEGORY(p->member); // lvalue
+PRINT_VALUE_CATEGORY((*p).member); // lvalue
+```
+
+---
+
+# lvalue examples - functions
+
+```cpp
+void foo() {}
+
+void (*p)() = &foo;
+PRINT_VALUE_CATEGORY(foo); // lvalue
+```
+
+<v-click>
+
+```cpp
+int& a_ref() {
+	static int a = 0;
+	return a;
+}
+
+a_ref() = 5;
+PRINT_VALUE_CATEGORY(a_ref()); // lvalue
+    ```
+
+</v-click>
+
+---
+
+# lvalue examples - array access
+
+```cpp
+int a[] = {0, 1, 2};
+int* p = a;
+PRINT_VALUE_CATEGORY(a); // lvalue
+PRINT_VALUE_CATEGORY(p); // lvalue
+PRINT_VALUE_CATEGORY(a[0]); // lvalue
+PRINT_VALUE_CATEGORY(p[0]); // lvalue
+```
+
+---
+
+# lvalue examples
+
+```cpp
+int i = 0;
+PRINT_VALUE_CATEGORY(++i); // lvalue
+
+PRINT_VALUE_CATEGORY(static_cast<int&>(i)) // lvalue
+```
+
+---
+
+# lvalues - summary
+
+* has a name? $\rightarrow$ lvalue
+* can take address? $\rightarrow$ lvalue
+* assignable? $\rightarrow$ lvalue
+
+```cpp
+auto const i_const = 1;
+i_const = 2; // error, although i_const is an lvalue
+auto a = 1;
+auto const& a_constref = a;
+a_constref = 2; // error, although a_constref is an lvalue
+```
+
+---
+
+# rvalues
+
+* xvalues
+- prvalues
+
+---
+
+# prvalues ("pure rvalues")
+
+```cpp
+int x = 2;
+1 = x; // error: lvalue required as left operand of assignment (GCC) | error: lvalue required as left operand of assignment (MSVC)
+```
+
+---
+
