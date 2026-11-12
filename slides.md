@@ -228,7 +228,6 @@ static_assert(std::same_as<int, std::decay_t<decltype(a_ref)>>);
 
 # Value categories
 
-<v-clicks>
 
 Not for you...
 
@@ -240,7 +239,6 @@ enum class E { one = 1, two = 2, three = 3 };
 E::one = 2; // ❌
 ```
 
-</v-clicks>
 
 
 ---
@@ -426,7 +424,6 @@ int&& b_ref_ref = std::move(b);
 PRINT_VALUE_CATEGORY(b_ref_ref); // lvalue!
 ```
 
-<v-clicks>
 
 > "(...) named rvalue references are treated as lvalues and unnamed rvalue references to objects are treated as xvalues; rvalue references to functions are treated as lvalues whether named or not."
 
@@ -434,7 +431,6 @@ PRINT_VALUE_CATEGORY(b_ref_ref); // lvalue!
 assert(&b == &b_ref_ref);
 ```
 
-</v-clicks>
 
 ---
 
@@ -460,7 +456,6 @@ void (*p)() = &foo;
 PRINT_VALUE_CATEGORY(foo); // lvalue
 ```
 
-<v-click>
 
 ```cpp
 int& a_ref() {
@@ -470,9 +465,8 @@ int& a_ref() {
 
 a_ref() = 5;
 PRINT_VALUE_CATEGORY(a_ref()); // lvalue
-    ```
+```
 
-</v-click>
 
 ---
 
@@ -571,7 +565,7 @@ s.foo();
 
 ---
 
-# xvalues
+# xvalue
 
 ```cpp
 int x = 1;
