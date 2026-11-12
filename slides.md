@@ -30,7 +30,21 @@ fonts:
   local: CaskaydiaCove Nerd Font
 ---
 
-# (Im)Perfect Forwarding: A Practical Guide to Value Categories in C++
+# (Im)Perfect Forwarding
+
+## A Practical Guide to Value Categories in C++
+
+Jan Wilczek (thinkcell)
+
+Milan Nov 2026
+
+---
+layout: cover
+---
+
+<img src="./assets/tc_homepage_hero.webp" class="w-full h-full"/>
+
+<!-- Please, interrupt me. I will be showing a lot of code so you may get lost. Please, stop me and ask question, even if it's just because you fell asleep -->
 
 ---
 
