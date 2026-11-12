@@ -137,7 +137,7 @@ static_assert(std::same_as<Lifetime, decltype(my_invoke_bad(foo))>); // ⚠️
 ```
 ```cpp {2|11}
 template <typename Func>
-decltype(auto) my_invoke_bad(Func&& func) {
+decltype(auto) my_invoke_good(Func&& func) {
 	return func();
 }
 
@@ -150,7 +150,7 @@ static_assert(std::same_as<Lifetime const&, decltype(my_invoke_good(foo))>); // 
 ```
 ```cpp {11}
 template <typename Func>
-decltype(auto) my_invoke_bad(Func&& func) {
+decltype(auto) my_invoke_good(Func&& func) {
 	return func();
 }
 
