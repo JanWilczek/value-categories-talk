@@ -641,4 +641,162 @@ void foo_cpp17(auto&& forwarding_ref) {}
 
 ---
 
+# Forwarding forwarding reference
+
+````md magic-move
+```cpp
+template <typename T>
+void foo(T&& forwarding_ref) {
+	bar(std::forward<T>(forwarding_ref));
+}
+
+void foo_cpp17(auto&& forwarding_ref) {
+	bar(???);
+}
+```
+```cpp
+template <typename T>
+void foo(T&& forwarding_ref) {
+	bar(std::forward<T>(forwarding_ref));
+}
+
+void foo_cpp17(auto&& forwarding_ref) {
+	bar(tc_move_if_owned(forwarding_ref));
+}
+```
+````
+
+---
+
+# `tc_move_if_owned()`
+
+```cpp
+namespace detail {
+	template <typename T>
+	struct move_if_owned {
+		using type = T&&;
+	};
+}
+
+// T -> T&&
+// T& -> T&
+// T&& -> T&&
+#define tc_move_if_owned(v) (static_cast<typename detail::move_if_owned<decltype(v)>::type>(v))
+```
+
+---
+
+# Reference collapsing
+
+---
+
+```cpp
+template <typename Func>
+auto my_invoke_bad(Func&& func) {
+	return func();
+}
+
+Lifetime const& foo() {
+	static const Lifetime l{"foo"};
+	return l;
+}
+
+int main() {
+	auto const& s = my_invoke_bad(foo);
+}
+// foo constructor
+// foo_copy copy constructor
+// foo_copy destructor
+// foo destructor
+```
+
+---
+
+```cpp
+template <typename Func>
+decltype(auto) my_invoke_good(Func&& func) {
+	return func();
+}
+
+
+Lifetime const& foo() {
+	static const Lifetime l{"foo"};
+	return l;
+}
+
+int main() {
+	auto const& s = my_invoke_good(foo);
+}
+// foo constructor
+// foo destructor
+```
+
+---
+
+```cpp
+void test_rvalue_ref_arg(int&& x_ref_ref) {
+	PRINT_VALUE_CATEGORY(x_ref_ref); // lvalue!
+	PRINT_VALUE_CATEGORY(std::move(x_ref_ref)); // xvalue
+}
+
+int b = 1;
+test_rvalue_ref_arg(std::move(b));
+test_rvalue_ref_arg(1); // prvalue-to-xvalue conversion
+```
+
+---
+
+# Pitfalls of `std::move()`
+
+```cpp
+Lifetime l{"foo"};
+Lifetime& l_ref = l;
+Lifetime const& l_constref = l;
+Lifetime const l_const{"foo_const"};
+
+Lifetime l_constref_moved = std::move(l_constref); // copy
+Lifetime l_const_moved = std::move(l_const); // copy
+Lifetime l_ref_moved = std::move(l_ref); // move
+```
+
+---
+
+# Safer move
+
+```cpp
+namespace detail {
+
+template <typename Decltype>
+constexpr decltype(auto) safe_move(auto&& obj) noexcept {
+	static_assert(!std::is_const<std::remove_reference_t<decltype(obj)>>::value, "Cannot move out of const.");
+	static_assert(!std::is_rvalue_reference<decltype(obj)>::value, "Unnecessary move; already an rvalue.");
+	static_assert(!std::is_lvalue_reference<Decltype>::value, "Are you sure you want to move out of an lvalue reference?");
+	
+	return static_cast<std::remove_reference_t<decltype(obj)>&&>(obj);
+}
+}
+
+#define safe_move(...) detail::safe_move<decltype(__VA_ARGS__)>(__VA_ARGS__)
+
+int main() {
+	int j = 1;
+	safe_move(j); // OK, an lvalue
+	int const k_const = 1;
+	safe_move(k_const); // compile error: const
+	int& j_ref = j;
+	safe_move(j_ref); // compile error: lvalue reference
+	safe_move(std::move(j)); // compile error: already an rvalue
+	int&& j_ref_ref = std::move(j);
+	safe_move(j_ref_ref)); // OK, because an lvalue
+}
+```
+
+---
+
+# What if you really want to move from an lvalue reference?
+
+* `tc_move_always()`
+* `tc_move_always_even_const()`
+
+---
 
