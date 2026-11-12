@@ -696,6 +696,8 @@ namespace detail {
 
 # Reference collapsing
 
+<img src="./assets/reference_collapsing.png" />
+
 ---
 
 ```cpp
