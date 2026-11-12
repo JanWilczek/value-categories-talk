@@ -532,3 +532,50 @@ int x = 2;
 
 ---
 
+# prvalue examples
+
+```cpp {1|2-3|4|5-6|7-9|10|11|12|13|14|15}
+PRINT_VALUE_CATEGORY(1); // prvalue
+int foo();
+PRINT_VALUE_CATEGORY(foo()); // prvalue
+PRINT_VALUE_CATEGORY([](){}); // prvalue
+enum class E { one, two, three };
+PRINT_VALUE_CATEGORY(E::one); // prvalue
+bool b1 = true;
+bool b2 = false;
+PRINT_VALUE_CATEGORY(b1 && b2); // prvalue
+PRINT_VALUE_CATEGORY(3 < x); // prvalue
+PRINT_VALUE_CATEGORY(&x); // prvalue
+PRINT_VALUE_CATEGORY(true); // prvalue
+PRINT_VALUE_CATEGORY(2.f); // prvalue
+PRINT_VALUE_CATEGORY(2.); // prvalue
+PRINT_VALUE_CATEGORY("foo"); // lvalue!
+```
+
+<!-- prvalue is never const or volatile, and function calls returning void are also treated as prvalues. -->
+
+---
+
+# `this` pointer
+
+```cpp
+struct S {
+	void foo() {
+		PRINT_VALUE_CATEGORY(this); // prvalue
+	}
+};
+
+S s{};
+s.foo();
+```
+
+---
+
+# xvalues
+
+```cpp
+int x = 1;
+PRINT_VALUE_CATEGORY(std::move(x)); // xvalue
+PRINT_VALUE_CATEGORY(static_cast<int&&>(x)); // xvalue
+```
+
