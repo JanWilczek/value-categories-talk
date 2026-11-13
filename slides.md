@@ -269,17 +269,17 @@ auto foo = <expression>; // foo has the type of the expression
 
 # Expression type examples
 
-```cpp
+```cpp {1|3|5-6|8-10}
 auto i = 1;
 
-auto i = 1 + 2;
+auto j = 1 + 2;
 
 int a = 1;
-auto i = a;
+auto k = a;
 
-int a = 1;
-int& a_ref = a;
-auto i = a_ref;
+int b = 1;
+int& b_ref = b;
+auto l = b_ref;
 ```
 
 ---
@@ -292,6 +292,13 @@ std::decay_t<decltype(1)> i = 1;
 
 auto i = 1 + 2;
 std::decay_t<decltype(1+2)> i = 1 + 2;
+
+int a = 1;
+std::decay_t<decltype(a)> k = a;
+
+int b = 1;
+int& b_ref = b;
+std::decay_t<decltype(b_ref)> l = b_ref;
 ```
 
 ---
