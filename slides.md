@@ -262,7 +262,7 @@ layout: quote
 # Expression type
 
 ```cpp
-auto foo = <expression>;
+auto foo = <expression>; // foo has the type of the expression
 ```
 
 ---
