@@ -183,12 +183,14 @@ static_assert(std::same_as<Lifetime const&, decltype(my_invoke_good(foo))>); // 
 
 
 ---
+layout: quote
+---
 
 # Value categories are about expressions
 
 <v-click>
 
-> "An expression is a sequence of operators and operands that specifies a computation[.](https://eel.is/c++draft/expr#pre-1.sentence-2) An expression can result in a value and can cause side effects[.](https://eel.is/c++draft/expr#pre-1.sentence-3)"
+> An expression is a sequence of operators and operands that specifies a computation[.](https://eel.is/c++draft/expr#pre-1.sentence-2) An expression can result in a value and can cause side effects[.](https://eel.is/c++draft/expr#pre-1.sentence-3)
 
 </v-click>
 
@@ -248,7 +250,7 @@ class MyClass {
 
 ---
 
-> "each C++ expression has a type and a value category"
+> each C++ expression has a type and a value category
 
 ---
 
@@ -291,7 +293,7 @@ std::decay_t<decltype(1+2)> i = 1 + 2;
 
 # Expression type is never a reference
 
-> "If an expression initially has the type “reference to T”, the type is adjusted to T prior to any further analysis; the value category of the expression is not altered."
+> If an expression initially has the type “reference to T”, the type is adjusted to T prior to any further analysis; the value category of the expression is not altered.
 
 ---
 
@@ -515,7 +517,7 @@ PRINT_VALUE_CATEGORY(b_ref_ref); // lvalue!
 ```
 
 
-> "(...) named rvalue references are treated as lvalues and unnamed rvalue references to objects are treated as xvalues; rvalue references to functions are treated as lvalues whether named or not."
+> (...) named rvalue references are treated as lvalues and unnamed rvalue references to objects are treated as xvalues; rvalue references to functions are treated as lvalues whether named or not.
 
 ```cpp
 assert(&b == &b_ref_ref);
