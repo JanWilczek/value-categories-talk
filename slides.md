@@ -174,10 +174,58 @@ static_assert(std::same_as<Lifetime const&, decltype(my_invoke_good(foo))>); // 
 </v-click>
 
 ---
+layout: two-cols-header
+---
 
 # Examples of C++ expressions
 
-<img src="/assets/expression_examples.png" />
+::left::
+
+### ✅ Expressions
+
+```cpp
+// Evaluating to a value
+5 + 3              // evaluates to 8
+std::string("hi")  // temporary string object
+func()             // evaluates to the return value
+[](){ return 42; }() // closure call
+
+// Accessing existing objects
+*ptr
+arr[2]
+std::move(x)
+
+// Causing side effects
+x = 5              // assigns 5 to x
+++x                // increments x by 1
+std::cout << x     // prints to standard output
+```
+
+::right::
+
+### ❌ Not expressions
+
+```cpp
+int a;               // declaration statement
+
+namespace ns {}      // namespace definition
+
+void fun() {}        // function definition
+
+typedef int MyInt;   // type alias
+
+class MyClass {
+  // ...
+};                   // class definition
+```
+
+<div class="abs-b text-left pl-15 pb-6 w-full">
+
+<span class="text-xs opacity-60">Adapted from Sandeep Mantrala, "C++ Value Categories in Action", C++ on Sea 2025</span>
+
+</div>
+
+<!-- Only expressions have value categories! -->
 
 ---
 
@@ -875,3 +923,4 @@ using prvalue_as_temporary_t = std::conditional_t<
 * Apply to thinkcell!
 
 </v-clicks>
+
