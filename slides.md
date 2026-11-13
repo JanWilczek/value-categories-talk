@@ -410,13 +410,22 @@ constexpr auto value_category = value_category_t<T>::name;
 
 # What will this print?
 
-```cpp
+````md magic-move
+```cpp {1-2|4-5|all}
 int& i_ref = i;
-static_assert(std::same_as<int&, decltype((i_ref))>); // lvalue!
+PRINT_VALUE_CATEGORY(i_ref);
 
 int&& i_ref_ref = std::move(i);
-static_assert(std::same_as<int&, decltype((i_ref_ref))>); // lvalue!
+PRINT_VALUE_CATEGORY(i_ref_ref);
 ```
+```cpp
+int& i_ref = i;
+PRINT_VALUE_CATEGORY(i_ref); // lvalue
+
+int&& i_ref_ref = std::move(i);
+PRINT_VALUE_CATEGORY(i_ref_ref); // lvalue
+```
+````
 
 ---
 
