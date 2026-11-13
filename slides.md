@@ -64,104 +64,123 @@ layout: cover
 ```cpp
 template <typename Func>
 auto my_invoke_bad(Func&& func) {
-	return func();
+    return func();
 }
 ```
 
 ---
 
+# My favorite C++ class
+
 ```cpp
-class Lifetime {
-public:
-	explicit Lifetime(std::string_view name) : name_{name} {
-		std::println("{} constructor", name_);
-	}
-	
-	~Lifetime() {
-		std::println("{} destructor", name_);
-	}
+struct Lifetime {
+    explicit Lifetime(std::string_view name) : name_{name} { std::println("{} constructor", name_); }
+    ~Lifetime() { std::println("{} destructor", name_); }
+    Lifetime(const Lifetime& other) : name_{other.name_ + "_copy"} { std::println("{} copy constructor", name_); }
 
-	Lifetime(const Lifetime& other) : name_{other.name_ + "_copy"} {
-		std::println("{} copy constructor", name_);
-	}
+    Lifetime(Lifetime&& other) noexcept : name_{other.name_ + "_moved"} {
+        std::println("{} move constructor", name_);
+    }
 
-	Lifetime(Lifetime&& other) : name_{other.name_ + "_moved"} {
-		std::println("{} move constructor", name_);
-	}
+    Lifetime& operator=(const Lifetime& other) {
+        name_ = other.name_ + "_copy";
+        std::println("{} copy assignment", name_);
+        return *this;
+    }
 
-	Lifetime& operator=(const Lifetime& other) {
-		name_ = other.name_ + "_copy";
-		std::println("{} copy assignment", name_);
-		return *this;
-	}
-
-Lifetime& operator=(Lifetime&& other) {
-	name_ = other.name_ + "_moved";
-	std::println("{} move assignment", name_);
-	return *this;
-}
+    Lifetime& operator=(Lifetime&& other) noexcept {
+        name_ = other.name_ + "_moved";
+        std::println("{} move assignment", name_);
+        return *this;
+    }
 
 private:
-	std::string name_;
+    std::string name_;
 };
 ```
 
 ---
 
-````md magic-move
-```cpp {1-4|6-9|11}
+# What's wrong with this code?
+
+https://godbolt.org/z/rexGsqvnj
+
+```cpp
 template <typename Func>
 auto my_invoke_bad(Func&& func) {
-	return func();
+    return func();
 }
+```
 
+<v-click>
+
+````md magic-move
+```cpp
 Lifetime const& foo() {
-	static Lifetime const l{"foo"};
-	return l;
+    static Lifetime const l{"foo"};
+    return l;
 }
 
 auto const& s = my_invoke_bad(foo);
 ```
-```cpp {11|all|2}
-template <typename Func>
-auto my_invoke_bad(Func&& func) {
-	return func();
+```cpp
+Lifetime const& foo() {
+    static Lifetime const l{"foo"};
+    return l;
 }
 
-Lifetime const& foo() {
-	static Lifetime const l{"foo"};
-	return l;
-}
+auto const& s = my_invoke_bad(foo);
+// foo constructor
+// foo_copy copy constructor
+// foo_copy destructor
+// foo destructor
 
 static_assert(std::same_as<Lifetime, decltype(my_invoke_bad(foo))>); // ⚠️
 ```
-```cpp {2|11}
+````
+
+</v-click>
+
+---
+
+# `decltype(auto)` preserves type and value category of the returned expression
+
+https://godbolt.org/z/rexGsqvnj
+
+````md magic-move
+```cpp {2}
 template <typename Func>
-decltype(auto) my_invoke_good(Func&& func) {
-	return func();
+auto my_invoke_bad(Func&& func) {
+    return func();
 }
 
 Lifetime const& foo() {
-	static Lifetime const l{"foo"};
-	return l;
+    static Lifetime const l{"foo"};
+    return l;
 }
 
-static_assert(std::same_as<Lifetime const&, decltype(my_invoke_good(foo))>); // ✅
+auto const& s = my_invoke_bad(foo);
+static_assert(std::same_as<Lifetime, decltype(my_invoke_bad(foo))>); // ⚠️
 ```
-```cpp {11}
+```cpp {2|2,11,12|14-15}
 template <typename Func>
 decltype(auto) my_invoke_good(Func&& func) {
-	return func();
+    return func();
 }
 
 Lifetime const& foo() {
-	static Lifetime const l{"foo"};
-	return l;
+    static Lifetime const l{"foo"};
+    return l;
 }
 
+auto const& s = my_invoke_good(foo);
 static_assert(std::same_as<Lifetime const&, decltype(my_invoke_good(foo))>); // ✅
+
+// foo constructor
+// foo destructor
 ```
 ````
+
 
 ---
 
@@ -340,17 +359,17 @@ static_assert(std::same_as<int&&, decltype((std::move(i)))>); // std::move(i) is
 ```cpp
 template <typename T>
 struct value_category_t {
-	static constexpr auto name = "prvalue";
+    static constexpr auto name = "prvalue";
 };
 
 template <typename T>
 struct value_category_t<T&> {
-	static constexpr auto name = "lvalue";
+    static constexpr auto name = "lvalue";
 };
 
 template <typename T>
 struct value_category_t<T&&> {
-	static constexpr auto name = "xvalue";
+    static constexpr auto name = "xvalue";
 };
 
 template <typename T>
@@ -375,15 +394,15 @@ static_assert(std::same_as<int&, decltype((i_ref_ref))>); // lvalue!
 
 ```cpp
 struct S {
-	int one = 1;
-	int two = 2;
+    int one = 1;
+    int two = 2;
 };
 
 int main() {
-	S s{};
-	
-	auto i = s.one;
-	auto j = s.two;
+    S s{};
+    
+    auto i = s.one;
+    auto j = s.two;
 }
 ```
 
@@ -415,8 +434,8 @@ mov DWORD PTR j$[rsp], eax
 
 ```cpp
 struct S {
-	int one = 1;
-	int two = 2;
+    int one = 1;
+    int two = 2;
 };
 
 int main() {
@@ -467,14 +486,14 @@ int i = 0;
 static_assert(std::same_as<int&, decltype((i))>); // lvalue
 
 S& s_ref = S{}; // error: cannot bind non-const lvalue reference of type 'S&' to an rvalue of type 'S' (GCC) 
-				// A non-const reference may only be bound to an lvalue (MSVC)
+                // A non-const reference may only be bound to an lvalue (MSVC)
 ```
 ```cpp
 int i = 0;
 static_assert(std::same_as<int&, decltype((i))>); // lvalue
 
 S& s_ref = S{}; // error: cannot bind non-const lvalue reference of type 'S&' to an rvalue of type 'S' (GCC) 
-				// A non-const reference may only be bound to an lvalue (MSVC)
+                // A non-const reference may only be bound to an lvalue (MSVC)
 
 S const& s_constref = S{}; // temporary lifetime extension
 ```
@@ -530,8 +549,8 @@ PRINT_VALUE_CATEGORY(foo); // lvalue
 
 ```cpp
 int& a_ref() {
-	static int a = 0;
-	return a;
+    static int a = 0;
+    return a;
 }
 
 a_ref() = 5;
@@ -626,9 +645,9 @@ PRINT_VALUE_CATEGORY("foo"); // lvalue!
 
 ```cpp
 struct S {
-	void foo() {
-		PRINT_VALUE_CATEGORY(this); // prvalue
-	}
+    void foo() {
+        PRINT_VALUE_CATEGORY(this); // prvalue
+    }
 };
 
 S s{};
@@ -663,21 +682,21 @@ layout: cover
 
 ```cpp
 void foo(const Lifetime&) {
-	std::println("const&");
+    std::println("const&");
 }
 
 void foo(Lifetime&) {
-	std::println("&");
+    std::println("&");
 }
 
 void foo(Lifetime&&) {
-	std::println("&&");
+    std::println("&&");
 }
 
 int main() {
-	Lifetime l{"bar"};
-	foo(std::move(l));
-	foo(Lifetime{"baz"});
+    Lifetime l{"bar"};
+    foo(std::move(l));
+    foo(Lifetime{"baz"});
 }
 ```
 
@@ -715,21 +734,21 @@ void foo_cpp17(auto&& forwarding_ref) {}
 ```cpp
 template <typename T>
 void foo(T&& forwarding_ref) {
-	bar(std::forward<T>(forwarding_ref));
+    bar(std::forward<T>(forwarding_ref));
 }
 
 void foo_cpp17(auto&& forwarding_ref) {
-	bar(???);
+    bar(???);
 }
 ```
 ```cpp
 template <typename T>
 void foo(T&& forwarding_ref) {
-	bar(std::forward<T>(forwarding_ref));
+    bar(std::forward<T>(forwarding_ref));
 }
 
 void foo_cpp17(auto&& forwarding_ref) {
-	bar(tc_move_if_owned(forwarding_ref));
+    bar(tc_move_if_owned(forwarding_ref));
 }
 ```
 ````
@@ -740,10 +759,10 @@ void foo_cpp17(auto&& forwarding_ref) {
 
 ```cpp
 namespace detail {
-	template <typename T>
-	struct move_if_owned {
-		using type = T&&;
-	};
+    template <typename T>
+    struct move_if_owned {
+        using type = T&&;
+    };
 }
 
 // T -> T&&
@@ -763,16 +782,16 @@ namespace detail {
 ```cpp
 template <typename Func>
 auto my_invoke_bad(Func&& func) {
-	return func();
+    return func();
 }
 
 Lifetime const& foo() {
-	static const Lifetime l{"foo"};
-	return l;
+    static const Lifetime l{"foo"};
+    return l;
 }
 
 int main() {
-	auto const& s = my_invoke_bad(foo);
+    auto const& s = my_invoke_bad(foo);
 }
 // foo constructor
 // foo_copy copy constructor
@@ -785,17 +804,17 @@ int main() {
 ```cpp
 template <typename Func>
 decltype(auto) my_invoke_good(Func&& func) {
-	return func();
+    return func();
 }
 
 
 Lifetime const& foo() {
-	static const Lifetime l{"foo"};
-	return l;
+    static const Lifetime l{"foo"};
+    return l;
 }
 
 int main() {
-	auto const& s = my_invoke_good(foo);
+    auto const& s = my_invoke_good(foo);
 }
 // foo constructor
 // foo destructor
@@ -805,8 +824,8 @@ int main() {
 
 ```cpp
 void test_rvalue_ref_arg(int&& x_ref_ref) {
-	PRINT_VALUE_CATEGORY(x_ref_ref); // lvalue!
-	PRINT_VALUE_CATEGORY(std::move(x_ref_ref)); // xvalue
+    PRINT_VALUE_CATEGORY(x_ref_ref); // lvalue!
+    PRINT_VALUE_CATEGORY(std::move(x_ref_ref)); // xvalue
 }
 
 int b = 1;
@@ -838,26 +857,26 @@ namespace detail {
 
 template <typename Decltype>
 constexpr decltype(auto) safe_move(auto&& obj) noexcept {
-	static_assert(!std::is_const<std::remove_reference_t<decltype(obj)>>::value, "Cannot move out of const.");
-	static_assert(!std::is_rvalue_reference<decltype(obj)>::value, "Unnecessary move; already an rvalue.");
-	static_assert(!std::is_lvalue_reference<Decltype>::value, "Are you sure you want to move out of an lvalue reference?");
-	
-	return static_cast<std::remove_reference_t<decltype(obj)>&&>(obj);
+    static_assert(!std::is_const<std::remove_reference_t<decltype(obj)>>::value, "Cannot move out of const.");
+    static_assert(!std::is_rvalue_reference<decltype(obj)>::value, "Unnecessary move; already an rvalue.");
+    static_assert(!std::is_lvalue_reference<Decltype>::value, "Are you sure you want to move out of an lvalue reference?");
+    
+    return static_cast<std::remove_reference_t<decltype(obj)>&&>(obj);
 }
 }
 
 #define safe_move(...) detail::safe_move<decltype(__VA_ARGS__)>(__VA_ARGS__)
 
 int main() {
-	int j = 1;
-	safe_move(j); // OK, an lvalue
-	int const k_const = 1;
-	safe_move(k_const); // compile error: const
-	int& j_ref = j;
-	safe_move(j_ref); // compile error: lvalue reference
-	safe_move(std::move(j)); // compile error: already an rvalue
-	int&& j_ref_ref = std::move(j);
-	safe_move(j_ref_ref); // OK, because an lvalue
+    int j = 1;
+    safe_move(j); // OK, an lvalue
+    int const k_const = 1;
+    safe_move(k_const); // compile error: const
+    int& j_ref = j;
+    safe_move(j_ref); // compile error: lvalue reference
+    safe_move(std::move(j)); // compile error: already an rvalue
+    int&& j_ref_ref = std::move(j);
+    safe_move(j_ref_ref); // OK, because an lvalue
 }
 ```
 
