@@ -221,7 +221,7 @@ class MyClass {
 
 <div class="abs-b text-left pl-15 pb-6 w-full">
 
-<span class="text-xs opacity-60">Adapted from Sandeep Mantrala, "C++ Value Categories in Action", C++ on Sea 2025</span>
+<span class="text-xs opacity-60">Adapted from Sandeep Mantrala, *C++ Value Categories in Action*, C++ on Sea 2025</span>
 
 </div>
 
@@ -907,6 +907,26 @@ using prvalue_as_temporary_t = std::conditional_t<
 #define tc_prvalue_as_temporary(...) \
   static_cast<tc::prvalue_as_temporary_t<decltype((__VA_ARGS__))>>(__VA_ARGS__)
 ```
+
+---
+
+# References
+
+## Written
+
+1. [*Value Categories* on cppreference.com](https://en.cppreference.com/cpp/language/value_category)
+1. [David Mazières, *C++ value categories and decltype demystified*](https://www.scs.stanford.edu/~dm/blog/decltype.html)
+1. [Sébastien Bini, Ed Catmur, *Relocating prvalues*, C++ Standard proposal](https://wg21.link/P2785)
+
+## Videos
+
+1. [Ben Saks, *Back to Basics: Understanding Value Categories*, CppCon 2019](https://youtu.be/XS2JddPq7GQ?si=bQoNwXxk0c-HdMwe)
+1. [Inbal Levi, *Back to Basics: Master C++ Value Categories With Standard Tools*, CppCon 2022](https://youtu.be/tH0Z2OvHAd8?si=FQA4ISNlebjP24p5)
+1. [Sandeep Mantrala, *Understanding C++ Value Categories: lvalue, rvalue, xvalue, std::move, std::forward & Best Practices*, C++ On Sea 2025](https://youtu.be/d5h9xpC9m8I?si=3ac14PJmIRu64zth)
+
+## Code
+
+1. [thinkcell public library](https://github.com/think-cell/think-cell-library)
 
 ---
 
