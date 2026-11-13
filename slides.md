@@ -202,7 +202,7 @@ layout: two-cols-header
 
 ### ✅ Expressions
 
-```cpp {all|1,2|1,3|1,4|1,5|7,8|7,9|7,10|12,13|12,14|12,15|all}
+```cpp {none|1,2|1,3|1,4|1,5|7,8|7,9|7,10|12,13|12,14|12,15|none}
 // Evaluating to a value
 5 + 3              // evaluates to 8
 std::string("hi")  // temporary string object
@@ -224,7 +224,7 @@ std::cout << x     // prints to standard output
 
 ### ❌ Not expressions
 
-```cpp
+```cpp {none|1|3|5|7|9-11}
 int a;               // declaration statement
 
 namespace ns {}      // namespace definition
