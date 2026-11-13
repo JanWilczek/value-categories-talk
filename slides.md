@@ -211,7 +211,7 @@ layout: two-cols-header
 // Evaluating to a value
 5 + 3              // evaluates to 8
 std::string("hi")  // temporary string object
-func()             // evaluates to the return value
+func()       // evaluates to the return value
 [](){ return 42; }() // closure call
 
 // Accessing existing objects
@@ -220,9 +220,9 @@ arr[2]
 std::move(x)
 
 // Causing side effects
-x = 5              // assigns 5 to x
-++x                // increments x by 1
-std::cout << x     // prints to standard output
+x = 5            // assigns 5 to x
+++x              // increments x by 1
+std::cout << x   // prints to standard output
 ```
 
 ::right::
