@@ -47,3 +47,9 @@ div.slidev-layout blockquote a {
   border-bottom: none;
   text-decoration: none;
 }
+
+/* Code: default is 12px (9pt) / 18px; bumped by 2pt, line height scaled to keep the 1.5 ratio */
+html:root {
+  --slidev-code-font-size: 11pt;
+  --slidev-code-line-height: 16.5pt;
+}

@@ -59,6 +59,7 @@ layout: cover
 1. Summary
 
 ---
+
 # What's wrong with this code?
 
 ```cpp
@@ -68,6 +69,8 @@ auto my_invoke_bad(Func&& func) {
 }
 ```
 
+---
+zoom: 0.8
 ---
 
 # My favorite C++ class
@@ -248,6 +251,8 @@ class MyClass {
 
 <!-- Only expressions have value categories! -->
 
+---
+layout: quote
 ---
 
 > each C++ expression has a type and a value category
