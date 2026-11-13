@@ -286,7 +286,7 @@ auto l = b_ref;
 
 # Retrieving expression type
 
-```cpp
+```cpp {1-2|4-5|7-8|10-12}
 auto i = 1;
 std::decay_t<decltype(1)> i = 1;
 
@@ -316,9 +316,9 @@ static_assert(std::same_as<int, std::decay_t<decltype(1)>>);
 
 static_assert(std::same_as<int, std::decay_t<decltype(1+2)>>);
 
-int a = 1;
-int& a_ref = a;
-static_assert(std::same_as<int, std::decay_t<decltype(a_ref)>>);
+int b = 1;
+int& b_ref = a;
+static_assert(std::same_as<int, std::decay_t<decltype(b_ref)>>);
 ```
 
 <!-- auto never gives a reference -->
@@ -327,6 +327,9 @@ static_assert(std::same_as<int, std::decay_t<decltype(a_ref)>>);
 
 # Value categories
 
+<p></p>
+
+<v-clicks>
 
 Not for you...
 
@@ -336,9 +339,10 @@ Not for you...
 enum class E { one = 1, two = 2, three = 3 };
 
 E::one = 2; // ❌
+E::one = E::two; // ❌
 ```
 
-
+</v-clicks>
 
 ---
 
