@@ -284,6 +284,24 @@ auto l = b_ref;
 
 ---
 
+# `decltype(<variable>)`
+
+```cpp {1-2|4-5|7-8}
+int i = 0;
+static_assert(std::same_as<int, decltype(i)>);
+
+int& i_ref = i;
+static_assert(std::same_as<int&, decltype(i_ref)>);
+
+int&& i_ref_ref = std::move(i);
+static_assert(std::same_as<int&&, decltype(i_ref_ref)>);
+```
+
+
+<!-- decltype(variable) returns the type the variable was declared with -->
+
+---
+
 # Retrieving expression type
 
 ```cpp {1-2|4-5|7-8|10-12}
@@ -346,24 +364,9 @@ E::one = E::two; // ❌
 
 ---
 
-# `decltype(<variable>)`
+# `decltype((<expression>))`
 
-```cpp
-int i = 0;
-static_assert(std::same_as<int, decltype(i)>);
-
-int& i_ref = i;
-static_assert(std::same_as<int&, decltype(i_ref)>);
-
-int&& i_ref_ref = std::move(i);
-static_assert(std::same_as<int&&, decltype(i_ref_ref)>);
-```
-
----
-
-# `decltype((<expr>))`
-
-```cpp {|1|3-4|6}
+```cpp {1|3-4|6}
 static_assert(std::same_as<int, decltype((1))>); // 1 is prvalue
 
 int i = 0;
@@ -372,9 +375,13 @@ static_assert(std::same_as<int&, decltype((i))>); // i is lvalue
 static_assert(std::same_as<int&&, decltype((std::move(i)))>); // std::move(i) is xvalue
 ```
 
+<!-- decltype((<expression>)) returns a type that corresponds to the value category of the expression -->
+
 ---
 
-```cpp
+# Value category detector
+
+```cpp {19|16-19|11-14|6-9|1-4}
 template <typename T>
 struct value_category_t {
     static constexpr auto name = "prvalue";
@@ -393,10 +400,15 @@ struct value_category_t<T&&> {
 template <typename T>
 constexpr auto value_category = value_category_t<T>::name;
 
-#define PRINT_VALUE_CATEGORY(E) std::println("{}: {}", #E, value_category<decltype((E))>) // unevaluated
+#define PRINT_VALUE_CATEGORY(E) std::println("{}: {}", #E, value_category<decltype((E))>)
 ```
 
+
+<!-- expression given to the macro is unevaluated -->
+
 ---
+
+# What will this print?
 
 ```cpp
 int& i_ref = i;
