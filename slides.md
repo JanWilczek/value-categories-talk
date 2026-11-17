@@ -67,6 +67,8 @@ layout: cover
 
 # What's wrong with this code?
 
+https://godbolt.org/z/rexGsqvnj
+
 ```cpp
 template <typename Func>
 auto my_invoke_bad(Func&& func) {
@@ -79,6 +81,8 @@ zoom: 0.8
 ---
 
 # My favorite C++ class
+
+https://godbolt.org/z/rexGsqvnj
 
 ```cpp
 struct Lifetime {
@@ -290,6 +294,8 @@ auto l = b_ref;
 ---
 
 # `decltype(<variable>)`
+
+https://godbolt.org/z/9seq7Y8n8
 
 ```cpp {1-2|4-5|7-8}
 int i = 0;
