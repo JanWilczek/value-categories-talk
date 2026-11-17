@@ -829,7 +829,19 @@ namespace detail {
 
 # Reference collapsing
 
-<img src="./assets/reference_collapsing.png" width="70%" />
+```cpp
+// given typename T
+using TR = T&&;
+```
+
+| `T`    | `TR`  | Result |
+| ------ | ----- | ------ |
+| `A&`   | `T&`  | `A&`   |
+| `A&`   | `T&&` | `A&`   |
+| `A&&`  | `T&`  | `A&`   |
+| `A&&`  | `T&&` | `A&&`  |
+
+**Rule:** `&` always wins.
 
 ---
 
