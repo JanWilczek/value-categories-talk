@@ -683,7 +683,7 @@ PRINT_VALUE_CATEGORY(a++) // prvalue
 PRINT_VALUE_CATEGORY("foo"); // lvalue!
 ```
 
-<!-- prvalue is never const or volatile, and function calls returning void are also treated as prvalues. -->
+<!-- function calls returning void are also treated as prvalues. -->
 
 ---
 
