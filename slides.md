@@ -771,13 +771,15 @@ foo(std::move(i)); // calls foo<int>(int&&)
 
 ---
 
-# Simpler forwarding reference syntax (C++17)
+# Simpler forwarding reference syntax (C++20)
+
+"Abbreviated function template"
 
 ```cpp
 template <typename T>
 void foo(T&& forwarding_ref) {}
 
-void foo_cpp17(auto&& forwarding_ref) {}
+void foo_cpp20(auto&& forwarding_ref) {}
 ```
 
 ---
@@ -791,7 +793,7 @@ void foo(T&& forwarding_ref) {
     bar(std::forward<T>(forwarding_ref));
 }
 
-void foo_cpp17(auto&& forwarding_ref) {
+void foo_cpp20(auto&& forwarding_ref) {
     bar(???);
 }
 ```
@@ -801,7 +803,7 @@ void foo(T&& forwarding_ref) {
     bar(std::forward<T>(forwarding_ref));
 }
 
-void foo_cpp17(auto&& forwarding_ref) {
+void foo_cpp20(auto&& forwarding_ref) {
     bar(tc_move_if_owned(forwarding_ref));
 }
 ```
