@@ -714,7 +714,15 @@ PRINT_VALUE_CATEGORY(static_cast<int&&>(x)); // xvalue
 
 # Value categories classification
 
-<img src="/assets/value_categories_classification.png" />
+```mermaid {scale: 1.2}
+flowchart TD
+  expression --> glvalue
+  expression --> rvalue
+  glvalue --> lvalue
+  glvalue --> xvalue
+  rvalue --> xvalue
+  rvalue --> prvalue
+```
 
 ---
 layout: cover
@@ -1019,7 +1027,7 @@ using prvalue_as_temporary_t = std::conditional_t<
 * `decltype(x)` returns the type `x` was declared with
 * `decltype((x))` returns `T`, `T&`, or `T&&`, if expression `x` is a prvalue, lvalue, or an xvalue respectively
 * It's worth understanding value categories to read th C++ standard
-* Apply to thinkcell!
+* Apply to thinkcell! [thinkcell.com/career/tech](https://www.thinkcell.com/career/tech)
 
 </v-clicks>
 
