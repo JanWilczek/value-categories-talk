@@ -824,7 +824,8 @@ namespace detail {
 // T -> T&&
 // T& -> T&
 // T&& -> T&&
-#define tc_move_if_owned(v) (static_cast<typename detail::move_if_owned<decltype(v)>::type>(v))
+#define tc_move_if_owned(v) \
+    (static_cast<typename detail::move_if_owned<decltype(v)>::type>(v))
 ```
 
 ---
