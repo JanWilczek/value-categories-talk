@@ -34,13 +34,13 @@ fonts:
 
 ## A Practical Guide to Value Categories in C++
 
-<div class="pt-10">
+<div class="mt-15">
 
 Jan Wilczek
 
 code::dive November 2026
 
-<img src="./assets/thinkcell_logo_color_RGB.svg" class="w-80" />
+<img src="./assets/thinkcell_logo_color_RGB.svg" class="w-80 mt-6" />
 </div>
 
 ---
