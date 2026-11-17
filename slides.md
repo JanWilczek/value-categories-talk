@@ -1,12 +1,12 @@
 ---
 theme: default
 colorSchema: light
-title: (Im)Perfect Forwarding - Value Categories in C++
-titleTemplate: '%s - Jan Wilczek Meetup Milan Nov 2026'
+title: "(Im)Perfect Forwarding: A Practical Guide to Value Categories in C++"
+titleTemplate: '%s - Jan Wilczek code::dive 2026'
 info: |
-  ## (Im)Perfect Forwarding - Value Categories in C++
+  ## (Im)Perfect Forwarding: A Practical Guide to Value Categories in C++
 
-  Jan Wilczek's Milan C++ Meetup talk
+  Jan Wilczek's code::dive talk
 author: Jan Wilczek
 export:
   format: pdf
@@ -34,9 +34,14 @@ fonts:
 
 ## A Practical Guide to Value Categories in C++
 
-Jan Wilczek (thinkcell)
+<div class="pt-10">
 
-Milan Nov 2026
+Jan Wilczek
+
+code::dive November 2026
+
+<img src="./assets/thinkcell_logo_color_RGB.svg" class="w-80" />
+</div>
 
 ---
 layout: cover
@@ -658,7 +663,7 @@ int x = 2;
 
 # prvalue examples
 
-```cpp {1|2-3|4|5-6|7-9|10|11|12|13|14|15}
+```cpp {1|2-3|4|5-6|7-9|10|11|12-14|15-16|17}
 PRINT_VALUE_CATEGORY(1); // prvalue
 int foo();
 PRINT_VALUE_CATEGORY(foo()); // prvalue
@@ -673,6 +678,8 @@ PRINT_VALUE_CATEGORY(&x); // prvalue
 PRINT_VALUE_CATEGORY(true); // prvalue
 PRINT_VALUE_CATEGORY(2.f); // prvalue
 PRINT_VALUE_CATEGORY(2.); // prvalue
+int a = 1;
+PRINT_VALUE_CATEGORY(a++) // prvalue
 PRINT_VALUE_CATEGORY("foo"); // lvalue!
 ```
 
@@ -891,40 +898,54 @@ Lifetime l_ref_moved = std::move(l_ref); // move
 
 # Safer move
 
-```cpp
+```cpp {17|2-3|4-5|7-8|10-11|13}
 namespace detail {
-
 template <typename Decltype>
-constexpr decltype(auto) safe_move(auto&& obj) noexcept {
-    static_assert(!std::is_const<std::remove_reference_t<decltype(obj)>>::value, "Cannot move out of const.");
-    static_assert(!std::is_rvalue_reference<decltype(obj)>::value, "Unnecessary move; already an rvalue.");
-    static_assert(!std::is_lvalue_reference<Decltype>::value, "Are you sure you want to move out of an lvalue reference?");
+constexpr decltype(auto) tc_move(auto&& obj) noexcept {
+    static_assert(!std::is_const<std::remove_reference_t<decltype(obj)>>::value,
+                  "Cannot move out of const.");
+
+    static_assert(!std::is_rvalue_reference<decltype(obj)>::value,
+                  "Unnecessary move; already an rvalue.");
+
+    static_assert(!std::is_lvalue_reference<Decltype>::value,
+                  "Are you sure you want to move out of an lvalue reference?");
     
     return static_cast<std::remove_reference_t<decltype(obj)>&&>(obj);
 }
 }
 
-#define safe_move(...) detail::safe_move<decltype(__VA_ARGS__)>(__VA_ARGS__)
+#define tc_move(...) detail::tc_move<decltype(__VA_ARGS__)>(__VA_ARGS__)
+```
 
+---
+
+# Safer move
+
+```cpp {2-3|4-5|6-7|8|9-10}
 int main() {
     int j = 1;
-    safe_move(j); // OK, an lvalue
+    tc_move(j); // OK, an lvalue
     int const k_const = 1;
-    safe_move(k_const); // compile error: const
+    tc_move(k_const); // compile error: const
     int& j_ref = j;
-    safe_move(j_ref); // compile error: lvalue reference
-    safe_move(std::move(j)); // compile error: already an rvalue
+    tc_move(j_ref); // compile error: lvalue reference
+    tc_move(std::move(j)); // compile error: already an rvalue
     int&& j_ref_ref = std::move(j);
-    safe_move(j_ref_ref); // OK, because an lvalue
+    tc_move(j_ref_ref); // OK, because an lvalue
 }
 ```
 
 ---
 
-# What if you really want to move from an lvalue reference?
+# What if you really want to move from...
 
-* `tc_move_always()`
-* `tc_move_always_even_const()`
+<v-clicks>
+
+* an lvalue reference? $\rightarrow$ `tc_move_always()`
+* `const`? $\rightarrow$ `tc_move_always_even_const()`
+
+</v-clicks>
 
 ---
 layout: cover
