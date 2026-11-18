@@ -1652,7 +1652,7 @@ using prvalue_as_temporary_t = std::conditional_t<
 * xvalue: unnamed rvalue reference
 * `decltype(x)` returns the type `x` was declared with
 * `decltype((x))` returns `T`, `T&`, or `T&&`, if expression `x` is a prvalue, lvalue, or an xvalue respectively
-* It's worth understanding value categories to read th C++ standard
+* It's worth understanding value categories to read the C++ standard
 * Apply to thinkcell! [thinkcell.com/career/tech](https://www.thinkcell.com/career/tech)
 
 </v-clicks>
