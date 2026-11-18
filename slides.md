@@ -1427,75 +1427,87 @@ int main() {
 
 # Value categories conversions
 
-<svg viewBox="-60 20 920 410" class="w-full h-100 vc-conv">
-  <defs>
-    <marker id="vc-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="#374151" />
-    </marker>
-  </defs>
-  <!-- Nodes (each name appears once) -->
-  <g class="vc-node">
-    <rect x="325" y="32" width="150" height="56" rx="12" fill="#ede9fe" stroke="#7c3aed" />
-    <text x="400" y="69">xvalue</text>
-  </g>
-  <g class="vc-node">
-    <rect x="55" y="332" width="150" height="56" rx="12" fill="#dbeafe" stroke="#2563eb" />
-    <text x="130" y="369">lvalue</text>
-  </g>
-  <g class="vc-node">
-    <rect x="595" y="332" width="150" height="56" rx="12" fill="#ffedd5" stroke="#ea580c" />
-    <text x="670" y="369">prvalue</text>
-  </g>
-  <!-- 1: lvalue -> xvalue -->
-  <g v-click class="vc-edge">
-    <line x1="170" y1="332" x2="376" y2="103" />
-    <text x="290" y="215" text-anchor="start"><tspan class="vc-code">std::move()</tspan></text>
-  </g>
-  <!-- 2: prvalue -> xvalue -->
-  <g v-click class="vc-edge">
-    <line x1="646" y1="317" x2="440" y2="88" />
-    <text x="575" y="175" text-anchor="start">temporary</text>
-    <text x="575" y="199" text-anchor="start">materialization</text>
-  </g>
-  <!-- 3: xvalue, prvalue -> lvalue -->
-  <g v-click class="vc-edge">
-    <line x1="360" y1="88" x2="154" y2="317" />
-    <text x="225" y="175" text-anchor="end">variable</text>
-    <text x="225" y="199" text-anchor="end">binding</text>
-    <line x1="585" y1="349" x2="215" y2="349" />
-    <text x="400" y="335">variable binding</text>
-  </g>
-  <!-- 4: xvalue -> prvalue -->
-  <g v-click class="vc-edge">
-    <line x1="424" y1="103" x2="630" y2="332" />
-    <text x="555" y="265" text-anchor="end">what for?</text>
-  </g>
-  <!-- 5: lvalue -> prvalue -->
-  <g v-click class="vc-edge">
-    <line x1="215" y1="371" x2="585" y2="371" />
-    <text x="400" y="400">???</text>
-  </g>
-</svg>
+<!-- Nodes: each category appears once. Double-click any element in dev mode to drag it. -->
+
+<div v-drag="[415,122,150,56]" class="vc-node vc-x">xvalue</div>
+
+<div v-drag="[135,422,150,56]" class="vc-node vc-l">lvalue</div>
+
+<div v-drag="[695,422,150,56]" class="vc-node vc-p">prvalue</div>
+
+<!-- 1: lvalue -> xvalue -->
+
+<div v-click>
+
+<v-drag-arrow pos="252,422,214,-229" width="2.5" color="#374151" />
+
+<div v-drag="[385,300,130]" class="vc-label text-left"><code>std::move()</code></div>
+
+</div>
+
+<!-- 2: prvalue -> xvalue -->
+
+<div v-click>
+
+<v-drag-arrow pos="767,422,-214,-229" width="2.5" color="#374151" />
+
+<div v-drag="[670,245,200]" class="vc-label text-left">temporary materialization</div>
+
+</div>
+
+<!-- 3: xvalue, prvalue -> lvalue -->
+
+<div v-click>
+
+<v-drag-arrow pos="449,178,-214,229" width="2.5" color="#374151" />
+
+<div v-drag="[130,245,180]" class="vc-label text-right">variable binding</div>
+
+<v-drag-arrow pos="685,439,-390,0" width="2.5" color="#374151" />
+
+<div v-drag="[390,398,200]" class="vc-label text-center">variable binding</div>
+
+</div>
+
+<!-- 4: xvalue -> prvalue -->
+
+<div v-click>
+
+<v-drag-arrow pos="510,187,214,229" width="2.5" color="#374151" />
+
+<div v-drag="[520,340,120]" class="vc-label text-right">what for?</div>
+
+</div>
+
+<!-- 5: lvalue -> prvalue -->
+
+<div v-click>
+
+<v-drag-arrow pos="295,461,390,0" width="2.5" color="#374151" />
+
+<div v-drag="[440,472,100]" class="vc-label text-center">???</div>
+
+</div>
 
 <style>
-.vc-conv .vc-node rect { stroke-width: 2.5; }
-.vc-conv .vc-node text {
+.vc-node {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2.5px solid;
+  border-radius: 12px;
   font-size: 26px;
   font-weight: 700;
-  text-anchor: middle;
-  fill: #111827;
+  color: #111827;
 }
-.vc-conv .vc-edge line {
-  stroke: #374151;
-  stroke-width: 2.5;
-  marker-end: url(#vc-arrow);
-}
-.vc-conv .vc-edge text {
+.vc-x { background: #ede9fe; border-color: #7c3aed; }
+.vc-l { background: #dbeafe; border-color: #2563eb; }
+.vc-p { background: #ffedd5; border-color: #ea580c; }
+.vc-label {
   font-size: 20px;
-  fill: #374151;
+  line-height: 1.2;
+  color: #374151;
 }
-.vc-conv .vc-edge text:not([text-anchor]) { text-anchor: middle; }
-.vc-conv .vc-code { font-family: var(--slidev-code-font-family, monospace); }
 </style>
 
 ---
@@ -1573,4 +1585,3 @@ using prvalue_as_temporary_t = std::conditional_t<
 * Apply to thinkcell! [thinkcell.com/career/tech](https://www.thinkcell.com/career/tech)
 
 </v-clicks>
-
