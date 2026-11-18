@@ -1645,6 +1645,9 @@ using prvalue_as_temporary_t = std::conditional_t<
 
 # Summary
 
+<div class="grid grid-cols-[1fr_auto] gap-8 items-start">
+<div>
+
 <v-clicks>
 
 * lvalue: something we can take the address of
@@ -1656,4 +1659,10 @@ using prvalue_as_temporary_t = std::conditional_t<
 * Apply to thinkcell! [thinkcell.com/career/tech](https://www.thinkcell.com/career/tech)
 
 </v-clicks>
+
+</div>
+<div class="flex flex-col items-start">
+<img src="./assets/repo_qr_code.png" class="w-84" alt="QR code linking to the talk's GitHub repository" />
+</div>
+</div>
 
