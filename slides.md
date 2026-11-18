@@ -1441,7 +1441,7 @@ int main() {
 
 <v-drag-arrow pos="252,422,214,-229" width="2.5" color="#374151" />
 
-<div v-drag="[385,300,130]" class="vc-label text-left"><code>std::move()</code></div>
+<div v-drag="[385,300,130,NaN]" class="vc-label text-left"><code>std::move()</code></div>
 
 </div>
 
@@ -1451,21 +1451,21 @@ int main() {
 
 <v-drag-arrow pos="767,422,-214,-229" width="2.5" color="#374151" />
 
-<div v-drag="[670,245,200]" class="vc-label text-left">temporary materialization</div>
+<div v-drag="[670,245,200,NaN]" class="vc-label text-left">temporary materialization</div>
 
 </div>
 
-<!-- 3: xvalue, prvalue -> lvalue -->
+<!-- 3: xvalue, prvalue -> lvalue: not a conversion; a name is a new lvalue expression (dashed) -->
 
 <div v-click>
 
-<v-drag-arrow pos="449,178,-214,229" width="2.5" color="#374151" />
+<v-drag-arrow pos="449,178,-214,229" width="2.5" color="#374151" class="vc-dashed" />
 
-<div v-drag="[130,245,180]" class="vc-label text-right">variable binding</div>
+<div v-drag="[130,260,180,NaN]" class="vc-label text-right">naming</div>
 
-<v-drag-arrow pos="685,439,-390,0" width="2.5" color="#374151" />
+<v-drag-arrow pos="685,439,-390,0" width="2.5" color="#374151" class="vc-dashed" />
 
-<div v-drag="[390,398,200]" class="vc-label text-center">variable binding</div>
+<div v-drag="[390,404,200,NaN]" class="vc-label text-center">naming</div>
 
 </div>
 
@@ -1475,17 +1475,11 @@ int main() {
 
 <v-drag-arrow pos="510,187,214,229" width="2.5" color="#374151" />
 
-<div v-drag="[520,340,120]" class="vc-label text-right">what for?</div>
-
-</div>
-
-<!-- 5: lvalue -> prvalue -->
-
-<div v-click>
+<div v-drag="[460,335,180,NaN]" class="vc-label text-right">lvalue-to-rvalue conversion</div>
 
 <v-drag-arrow pos="295,461,390,0" width="2.5" color="#374151" />
 
-<div v-drag="[440,472,100]" class="vc-label text-center">???</div>
+<div v-drag="[340,472,300,NaN]" class="vc-label text-center">lvalue-to-rvalue conversion</div>
 
 </div>
 
@@ -1503,6 +1497,7 @@ int main() {
 .vc-x { background: #ede9fe; border-color: #7c3aed; }
 .vc-l { background: #dbeafe; border-color: #2563eb; }
 .vc-p { background: #ffedd5; border-color: #ea580c; }
+:deep(.vc-dashed line) { stroke-dasharray: 8 6; }
 .vc-label {
   font-size: 20px;
   line-height: 1.2;
