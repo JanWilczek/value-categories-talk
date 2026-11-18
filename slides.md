@@ -767,7 +767,7 @@ layout: cover
 <v-clicks>
 
 ```cpp
-int a; // 👈
+int x; // 👈
 ```
 
 Not an expression! $\implies$ No value category
@@ -805,6 +805,361 @@ foo // 👈
 ```
 
 lvalue
+
+</v-clicks>
+
+---
+
+# What is the value category of ...?
+
+<v-clicks>
+
+```cpp
+false // 👈
+```
+
+prvalue
+
+</v-clicks>
+
+---
+
+# What is the value category of ...?
+
+<v-clicks>
+
+```cpp
+"hello, world!" // 👈
+```
+
+lvalue
+
+</v-clicks>
+
+---
+
+# Given the code...
+
+<v-clicks>
+
+```cpp
+int a = 1;
+```
+
+## ...what is the value category of ...?
+
+```cpp
+a // 👈
+```
+
+lvalue
+
+</v-clicks>
+
+---
+
+# Given the code...
+
+<v-clicks>
+
+```cpp
+int a = 1;
+```
+
+## ...what is the value category of ...?
+
+```cpp
+std::move(a) // 👈
+```
+
+xvalue
+
+</v-clicks>
+
+---
+
+# Given the code...
+
+<v-clicks>
+
+```cpp
+int a = 1;
+int&& a_ref_ref = std::move(a);
+```
+
+## ...what is the value category of ...?
+
+```cpp
+a_ref_ref // 👈
+```
+
+lvalue
+
+</v-clicks>
+
+---
+
+# Given the code...
+
+<v-clicks>
+
+```cpp
+int a = 1;
+```
+
+## ...what is the value category of ...?
+
+```cpp
+&a // 👈
+```
+
+prvalue
+
+</v-clicks>
+
+---
+
+# Given the code...
+
+<v-clicks>
+
+```cpp
+int a = 1;
+int* pa = &a;
+```
+
+## ...what is the value category of ...?
+
+```cpp
+pa // 👈
+```
+
+lvalue
+
+</v-clicks>
+
+---
+
+# Given the code...
+
+<v-clicks>
+
+```cpp
+int a = 1;
+int* pa = &a;
+```
+
+## ...what is the value category of ...?
+
+```cpp
+*pa // 👈
+```
+
+lvalue
+
+</v-clicks>
+
+---
+
+# Given the code...
+
+<v-clicks>
+
+```cpp
+const int a_const = 2;
+```
+
+## ...what is the value category of ...?
+
+```cpp
+std::move(a_const) // 👈
+```
+
+xvalue
+
+</v-clicks>
+
+---
+
+# Given the code...
+
+<v-clicks>
+
+```cpp
+struct S {
+    int member;
+};
+S s{3};
+```
+
+## ...what is the value category of ...?
+
+```cpp
+s // 👈
+```
+
+lvalue
+
+</v-clicks>
+
+---
+
+# Given the code...
+
+<v-clicks>
+
+```cpp
+struct S {
+    int member;
+};
+S s{3};
+```
+
+## ...what is the value category of ...?
+
+```cpp
+s.member // 👈
+```
+
+lvalue
+
+</v-clicks>
+
+---
+
+# Given the code...
+
+<v-clicks>
+
+```cpp
+struct S {
+    int member;
+};
+S make_s();
+```
+
+## ...what is the value category of ...?
+
+```cpp
+make_s() // 👈
+```
+
+prvalue
+
+</v-clicks>
+
+---
+
+# Given the code...
+
+<v-clicks>
+
+```cpp
+struct S {
+    int member;
+};
+S make_s();
+```
+
+## ...what is the value category of ...?
+
+```cpp
+make_s().member // 👈
+```
+
+xvalue
+
+</v-clicks>
+
+---
+
+# Given the code...
+
+<v-clicks>
+
+```cpp
+struct S {
+    int member;
+};
+S& get_s();
+```
+
+## ...what is the value category of ...?
+
+```cpp
+get_s() // 👈
+```
+
+lvalue
+
+</v-clicks>
+
+---
+
+# Given the code...
+
+<v-clicks>
+
+```cpp
+struct S {
+    int member;
+};
+S&& get_s_ref_ref();
+```
+
+## ...what is the value category of ...?
+
+```cpp
+get_s_ref_ref // 👈
+```
+
+lvalue
+
+</v-clicks>
+
+---
+
+# Given the code...
+
+<v-clicks>
+
+```cpp
+struct S {
+    int member;
+};
+S&& get_s_ref_ref();
+```
+
+## ...what is the value category of ...?
+
+```cpp
+get_s_ref_ref() // 👈
+```
+
+xvalue
+
+</v-clicks>
+
+---
+
+# Given the code...
+
+<v-clicks>
+
+```cpp
+struct S {
+    int member;
+};
+S s{3};
+```
+
+## ...what is the value category of ...?
+
+```cpp
+std::move(s).member // 👈
+```
+
+xvalue
 
 </v-clicks>
 
