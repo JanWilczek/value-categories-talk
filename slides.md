@@ -1221,6 +1221,11 @@ foo(0); // calls foo<int>(int&&)
 foo(std::move(i)); // calls foo<int>(int&&)
 ```
 
+<v-click>
+
+prvalues and xvalues are treated the same $\implies$ perfect forwarding is not perfect
+
+</v-click>
 
 ---
 
@@ -1515,11 +1520,105 @@ layout: cover
 
 ---
 
-```cpp
-template <typename T> decltype(auto) id(T&& t) { return std::forward<T>(t); }
+# Some types are neither movable nor copyable
 
-auto&& a = id(std::move(x)); // ✅
-auto&& b = id(make_vec());   // ❌
+<v-clicks>
+
+* `std::mutex`
+
+- `gsl::not_null<std::unique_ptr<T>>`
+
+- 👉 [P2785](https://wg21.link/p2785)
+
+</v-clicks>
+
+---
+
+# P2785
+
+- `reloc` keyword
+- relocation constructor `T(T)`
+- relocation assignment operator `T& operator=(T)`.
+
+<!-- The reloc keyword converts an lvalue to a prvalue -->
+
+---
+
+# `reloc`
+
+```cpp {all|1|2|3}
+void foo(S x) {
+	bar(reloc x); // simultaneous move + end lifetime
+	// compiler prohibits the use of x
+}
+```
+
+---
+
+# `reloc` preserves value category
+
+```cpp {1|2|2-3|4-5|6}
+int a = 1;
+int& a_ref = a;
+reloc a_ref; // static_cast<int&>(a_ref)
+int&& a_ref_ref = std::move(a);
+reloc a_ref_ref; // static_cast<int&&>(a_ref)
+reloc a; // prvalue
+```
+
+---
+
+# (Im)perfect forwarding revisited
+
+````md magic-move
+```cpp
+template <typename T>
+void foo(T&& forwarding_ref) {
+    bar(std::forward<T>(forwarding_ref));
+}
+
+int i = 1;
+foo(i); // calls foo<int&>(int&)
+foo(0); // calls foo<int>(int&&)
+foo(std::move(i)); // calls foo<int>(int&&)
+```
+```cpp
+void foo(decltype(auto) forwarding_ref) {
+    bar(reloc forwarding_ref);
+}
+
+int i = 1;
+foo(i); // calls foo<int&>(int&)
+foo(0); // calls foo<int>(int)
+foo(std::move(i)); // calls foo<int&&>(int&&)
+```
+````
+
+---
+
+# The problem is...
+
+<div></div>
+
+P2785 is stalled.
+
+---
+
+# Perfect forwarding with thinkcell library
+
+https://godbolt.org/z/r77zqKfsz
+
+```cpp
+template <typename T>
+decltype(auto) forward_return(T&& arg) {
+    return std::forward<T>(arg);
+}
+
+Lifetime l{"foo"};
+auto&& r1 = forward_return(l); // returns Lifetime&
+auto&& r2 = forward_return(std::move(l)); // returns Lifetime&&
+auto&& r3 = forward_return(Lifetime{"bar"}); // returns Lifetime&&, "bar" destroyed at line end
+r3.use(); // UB
 ```
 
 ---
