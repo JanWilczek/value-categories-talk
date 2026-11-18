@@ -1427,21 +1427,76 @@ int main() {
 
 # Value categories conversions
 
-<div></div>
+<svg viewBox="-60 20 920 410" class="w-full h-100 vc-conv">
+  <defs>
+    <marker id="vc-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#374151" />
+    </marker>
+  </defs>
+  <!-- Nodes (each name appears once) -->
+  <g class="vc-node">
+    <rect x="325" y="32" width="150" height="56" rx="12" fill="#ede9fe" stroke="#7c3aed" />
+    <text x="400" y="69">xvalue</text>
+  </g>
+  <g class="vc-node">
+    <rect x="55" y="332" width="150" height="56" rx="12" fill="#dbeafe" stroke="#2563eb" />
+    <text x="130" y="369">lvalue</text>
+  </g>
+  <g class="vc-node">
+    <rect x="595" y="332" width="150" height="56" rx="12" fill="#ffedd5" stroke="#ea580c" />
+    <text x="670" y="369">prvalue</text>
+  </g>
+  <!-- 1: lvalue -> xvalue -->
+  <g v-click class="vc-edge">
+    <line x1="170" y1="332" x2="376" y2="103" />
+    <text x="290" y="215" text-anchor="start"><tspan class="vc-code">std::move()</tspan></text>
+  </g>
+  <!-- 2: prvalue -> xvalue -->
+  <g v-click class="vc-edge">
+    <line x1="646" y1="317" x2="440" y2="88" />
+    <text x="575" y="175" text-anchor="start">temporary</text>
+    <text x="575" y="199" text-anchor="start">materialization</text>
+  </g>
+  <!-- 3: xvalue, prvalue -> lvalue -->
+  <g v-click class="vc-edge">
+    <line x1="360" y1="88" x2="154" y2="317" />
+    <text x="225" y="175" text-anchor="end">variable</text>
+    <text x="225" y="199" text-anchor="end">binding</text>
+    <line x1="585" y1="349" x2="215" y2="349" />
+    <text x="400" y="335">variable binding</text>
+  </g>
+  <!-- 4: xvalue -> prvalue -->
+  <g v-click class="vc-edge">
+    <line x1="424" y1="103" x2="630" y2="332" />
+    <text x="555" y="265" text-anchor="end">what for?</text>
+  </g>
+  <!-- 5: lvalue -> prvalue -->
+  <g v-click class="vc-edge">
+    <line x1="215" y1="371" x2="585" y2="371" />
+    <text x="400" y="400">???</text>
+  </g>
+</svg>
 
-<v-clicks>
-
-lvalue -> xvalue: `std::move()`
-
-prvalue -> xvalue: temporary materialization conversion
-
-xvalue,prvalue -> lvalue: variable binding
-
-xvalue -> prvalue: what for?
-
-lvalue -> prvalue: ???
-
-</v-clicks>
+<style>
+.vc-conv .vc-node rect { stroke-width: 2.5; }
+.vc-conv .vc-node text {
+  font-size: 26px;
+  font-weight: 700;
+  text-anchor: middle;
+  fill: #111827;
+}
+.vc-conv .vc-edge line {
+  stroke: #374151;
+  stroke-width: 2.5;
+  marker-end: url(#vc-arrow);
+}
+.vc-conv .vc-edge text {
+  font-size: 20px;
+  fill: #374151;
+}
+.vc-conv .vc-edge text:not([text-anchor]) { text-anchor: middle; }
+.vc-conv .vc-code { font-family: var(--slidev-code-font-family, monospace); }
+</style>
 
 ---
 layout: cover
