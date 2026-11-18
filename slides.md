@@ -1424,6 +1424,26 @@ int main() {
 </v-clicks>
 
 ---
+
+# Value categories conversions
+
+<div></div>
+
+<v-clicks>
+
+lvalue -> xvalue: `std::move()`
+
+prvalue -> xvalue: temporary materialization conversion
+
+xvalue,prvalue -> lvalue: variable binding
+
+xvalue -> prvalue: what for?
+
+lvalue -> prvalue: ???
+
+</v-clicks>
+
+---
 layout: cover
 ---
 
