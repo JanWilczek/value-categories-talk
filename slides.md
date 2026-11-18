@@ -726,6 +726,20 @@ PRINT_VALUE_CATEGORY(make_s().member_ref_ref); // lvalue!
     - `this`
 
 ---
+
+# Value categories classification
+
+```mermaid {scale: 1.2}
+flowchart TD
+  expression --> glvalue
+  expression --> rvalue
+  glvalue --> lvalue
+  glvalue --> xvalue
+  rvalue --> xvalue
+  rvalue --> prvalue
+```
+
+---
 layout: cover
 ---
 
@@ -1133,20 +1147,6 @@ std::move(s).member // 👈
 xvalue
 
 </v-clicks>
-
----
-
-# Value categories classification
-
-```mermaid {scale: 1.2}
-flowchart TD
-  expression --> glvalue
-  expression --> rvalue
-  glvalue --> lvalue
-  glvalue --> xvalue
-  rvalue --> xvalue
-  rvalue --> prvalue
-```
 
 ---
 layout: cover
@@ -1571,11 +1571,15 @@ foo(std::move(i)); // calls foo<int&&>(int&&)
 
 <div></div>
 
+<v-click>
+
 P2785 is stalled.
+
+</v-click>
 
 ---
 
-# Perfect forwarding with thinkcell library
+# Further problems with perfect forwarding
 
 https://godbolt.org/z/r77zqKfsz
 
@@ -1652,3 +1656,4 @@ using prvalue_as_temporary_t = std::conditional_t<
 * Apply to thinkcell! [thinkcell.com/career/tech](https://www.thinkcell.com/career/tech)
 
 </v-clicks>
+
