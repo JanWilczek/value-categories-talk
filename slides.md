@@ -1505,6 +1505,8 @@ int main() {
 }
 </style>
 
+<!-- lvalue-to-rvalue conversion is like "loading a value"; sometimes that may result in a copy; how to optimize it? -->
+
 ---
 layout: cover
 ---
