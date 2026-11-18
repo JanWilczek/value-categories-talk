@@ -268,89 +268,37 @@ layout: quote
 
 ---
 
-# Expression type
-
-```cpp
-auto foo = <expression>; // foo has the type of the expression
-```
-
----
-
-# Expression type examples
-
-```cpp {1|3|5-6|8-10}
-auto i = 1;
-
-auto j = 1 + 2;
-
-int a = 1;
-auto k = a;
-
-int b = 1;
-int& b_ref = b;
-auto l = b_ref;
-```
-
----
-
-# `decltype(<variable>)`
-
-https://godbolt.org/z/9seq7Y8n8
-
-```cpp {1-2|4-5|7-8}
-int i = 0;
-static_assert(std::same_as<int, decltype(i)>);
-
-int& i_ref = i;
-static_assert(std::same_as<int&, decltype(i_ref)>);
-
-int&& i_ref_ref = std::move(i);
-static_assert(std::same_as<int&&, decltype(i_ref_ref)>);
-```
-
-
-<!-- decltype(variable) returns the type the variable was declared with -->
-
----
-
-# Retrieving expression type
-
-```cpp {1-2|4-5|7-8|10-12}
-auto i = 1;
-std::decay_t<decltype(1)> i = 1;
-
-auto i = 1 + 2;
-std::decay_t<decltype(1+2)> i = 1 + 2;
-
-int a = 1;
-std::decay_t<decltype(a)> k = a;
-
-int b = 1;
-int& b_ref = b;
-std::decay_t<decltype(b_ref)> l = b_ref;
-```
-
----
-
 # Expression type is never a reference
 
 > If an expression initially has the type “reference to T”, the type is adjusted to T prior to any further analysis; the value category of the expression is not altered.
 
 ---
 
+# Expression type
+
+```cpp {1|2|4|5|7}
+1
+1 + 2
+
+int a = 2;
+a
+
+std::move(a)
+```
+
+---
+
 # Retrieving expression type
 
 ```cpp
-static_assert(std::same_as<int, std::decay_t<decltype(1)>>);
+static_assert(std::same_as<int, std::remove_reference_t<decltype((1))>>);
 
-static_assert(std::same_as<int, std::decay_t<decltype(1+2)>>);
+static_assert(std::same_as<int, std::remove_reference_t<decltype((1+2))>>);
 
 int b = 1;
 int& b_ref = a;
-static_assert(std::same_as<int, std::decay_t<decltype(b_ref)>>);
+static_assert(std::same_as<int, std::remove_reference_t<decltype((b_ref))>>);
 ```
-
-<!-- auto never gives a reference -->
 
 ---
 
@@ -372,6 +320,26 @@ E::one = E::two; // ❌
 ```
 
 </v-clicks>
+
+---
+
+# `decltype(<variable>)`
+
+https://godbolt.org/z/9seq7Y8n8
+
+```cpp {1-2|4-5|7-8}
+int i = 0;
+static_assert(std::same_as<int, decltype(i)>);
+
+int& i_ref = i;
+static_assert(std::same_as<int&, decltype(i_ref)>);
+
+int&& i_ref_ref = std::move(i);
+static_assert(std::same_as<int&&, decltype(i_ref_ref)>);
+```
+
+
+<!-- decltype(variable) returns the type the variable was declared with -->
 
 ---
 
