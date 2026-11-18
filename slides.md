@@ -718,6 +718,25 @@ PRINT_VALUE_CATEGORY(static_cast<int&&>(x)); // xvalue
 
 ---
 
+# xvalue/prvalue pitfalls
+
+```cpp {1-5|7|9|10|11|12|11-12}
+struct S {
+    int member;
+    int& member_ref;
+    int&& member_ref_ref;
+};
+
+S make_s();
+
+PRINT_VALUE_CATEGORY(make_s()); // prvalue
+PRINT_VALUE_CATEGORY(make_s().member); // xvalue!
+PRINT_VALUE_CATEGORY(make_s().member_ref); // lvalue!
+PRINT_VALUE_CATEGORY(make_s().member_ref_ref); // lvalue!
+```
+
+---
+
 # Value categories summary & heuristics
 
 - lvalues
@@ -725,6 +744,7 @@ PRINT_VALUE_CATEGORY(static_cast<int&&>(x)); // xvalue
     - named variables and functions
     - string literals
     - array members
+    - pointer dereference
 - xvalues
     - ~ unnamed rvalue references
     - members of temporaries
@@ -732,6 +752,61 @@ PRINT_VALUE_CATEGORY(static_cast<int&&>(x)); // xvalue
     - ~ things that are not necessarily in memory
     - temporaries
     - results of operations
+    - `this`
+
+---
+layout: cover
+---
+
+# Quiz
+
+---
+
+# What is the value category of ...?
+
+<v-clicks>
+
+```cpp
+int a; // 👈
+```
+
+Not an expression! $\implies$ No value category
+
+</v-clicks>
+
+---
+
+# What is the value category of ...?
+
+<v-clicks>
+
+```cpp
+this // 👈
+```
+
+prvalue
+
+</v-clicks>
+
+---
+
+# Given the code...
+
+<v-clicks>
+
+```cpp
+int foo();
+```
+
+## ...what is the value category of ...?
+
+```cpp
+foo // 👈
+```
+
+lvalue
+
+</v-clicks>
 
 ---
 
