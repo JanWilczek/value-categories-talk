@@ -718,6 +718,23 @@ PRINT_VALUE_CATEGORY(static_cast<int&&>(x)); // xvalue
 
 ---
 
+# Value categories summary & heuristics
+
+- lvalues
+    - ~ things we can take the address of
+    - named variables and functions
+    - string literals
+    - array members
+- xvalues
+    - ~ unnamed rvalue references
+    - members of temporaries
+- prvalues
+    - ~ things that are not necessarily in memory
+    - temporaries
+    - results of operations
+
+---
+
 # Value categories classification
 
 ```mermaid {scale: 1.2}
