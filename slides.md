@@ -486,7 +486,8 @@ S* s_addr = &s;
 S s{};
 S* s_addr = &s;
 
-S* stemp_addr = &S{}; // error: taking address of rvalue (GCC) | error C2102: '&' requires l-value (MSVC)
+S* stemp_addr = &S{}; // error: taking address of rvalue (GCC) 
+                      // error C2102: '&' requires l-value (MSVC)
 ```
 ````
 
@@ -503,15 +504,17 @@ static_assert(std::same_as<int&, decltype((i))>); // lvalue
 int i = 0;
 static_assert(std::same_as<int&, decltype((i))>); // lvalue
 
-S& s_ref = S{}; // error: cannot bind non-const lvalue reference of type 'S&' to an rvalue of type 'S' (GCC) 
-                // A non-const reference may only be bound to an lvalue (MSVC)
+S& s_ref = S{}; // error: cannot bind non-const lvalue reference of type
+                // 'S&' to an rvalue of type 'S' (GCC) 
+                // error: A non-const reference may only be bound to an lvalue (MSVC)
 ```
 ```cpp
 int i = 0;
 static_assert(std::same_as<int&, decltype((i))>); // lvalue
 
-S& s_ref = S{}; // error: cannot bind non-const lvalue reference of type 'S&' to an rvalue of type 'S' (GCC) 
-                // A non-const reference may only be bound to an lvalue (MSVC)
+S& s_ref = S{}; // error: cannot bind non-const lvalue reference of type
+                // 'S&' to an rvalue of type 'S' (GCC) 
+                // error: A non-const reference may only be bound to an lvalue (MSVC)
 
 S const& s_constref = S{}; // temporary lifetime extension
 ```
