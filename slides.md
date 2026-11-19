@@ -1149,6 +1149,15 @@ xvalue
 </v-clicks>
 
 ---
+layout: image
+image: /assets/socks.jpg
+---
+
+---
+layout: image
+image: /assets/socks_closeup.jpg
+---
+---
 layout: cover
 ---
 
