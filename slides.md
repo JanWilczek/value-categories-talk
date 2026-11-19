@@ -611,6 +611,8 @@ PRINT_VALUE_CATEGORY(static_cast<int&>(i)) // lvalue
 * can take address? $\rightarrow$ lvalue
 * assignable? $\rightarrow$ lvalue
 
+<v-click>
+
 ```cpp
 auto const i_const = 1;
 i_const = 2; // error, although i_const is an lvalue
@@ -618,6 +620,8 @@ auto a = 1;
 auto const& a_constref = a;
 a_constref = 2; // error, although a_constref is an lvalue
 ```
+
+</v-click>
 
 ---
 
@@ -1167,7 +1171,7 @@ layout: cover
 
 # Move semantics (C++11)
 
-```cpp
+```cpp {all|9-11,15-16}
 void foo(const Lifetime&) {
     std::println("const&");
 }
@@ -1286,6 +1290,8 @@ using TR = T&&;
 
 ---
 
+# Perfect returning
+
 ```cpp
 template <typename Func>
 auto my_invoke_bad(Func&& func) {
@@ -1307,6 +1313,8 @@ int main() {
 ```
 
 ---
+
+# Perfect returning
 
 ```cpp
 template <typename Func>
