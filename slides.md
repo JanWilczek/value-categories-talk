@@ -90,7 +90,7 @@ struct Lifetime {
     ~Lifetime() { std::println("{} destructor", name_); }
     Lifetime(const Lifetime& other) : name_{other.name_ + "_copy"} { std::println("{} copy constructor", name_); }
 
-    Lifetime(Lifetime&& other) noexcept : name_{other.name_ + "_moved"} {
+    Lifetime(Lifetime&& other) : name_{other.name_ + "_moved"} {
         std::println("{} move constructor", name_);
     }
 
@@ -100,7 +100,7 @@ struct Lifetime {
         return *this;
     }
 
-    Lifetime& operator=(Lifetime&& other) noexcept {
+    Lifetime& operator=(Lifetime&& other) {
         name_ = other.name_ + "_moved";
         std::println("{} move assignment", name_);
         return *this;
@@ -221,7 +221,7 @@ layout: two-cols-header
 5 + 3              // evaluates to 8
 std::string("hi")  // temporary string object
 func()       // evaluates to the return value
-[](){ return 42; }() // closure call
+[](){ return 42; } // lambda
 
 // Accessing existing objects
 *ptr
