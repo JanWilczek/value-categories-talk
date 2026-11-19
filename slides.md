@@ -22,7 +22,7 @@ transition: undefined
 # enable Comark Syntax: https://comark.dev/syntax/markdown
 comark: true
 # duration of the presentation
-duration: 50min
+duration: 45min
 lineNumbers: true
 fonts:
   sans: Montserrat, Open Sans
@@ -695,6 +695,21 @@ PRINT_VALUE_CATEGORY(static_cast<int&&>(x)); // xvalue
 
 # xvalue/prvalue pitfalls
 
+```cpp
+void test_rvalue_ref_arg(int&& x_ref_ref) {
+    PRINT_VALUE_CATEGORY(x_ref_ref); // lvalue!
+    PRINT_VALUE_CATEGORY(std::move(x_ref_ref)); // xvalue
+}
+
+int b = 1;
+test_rvalue_ref_arg(std::move(b));
+test_rvalue_ref_arg(1); // prvalue-to-xvalue conversion
+```
+
+---
+
+# xvalue/prvalue pitfalls
+
 ```cpp {1-5|7|9|10|11|12|11-12}
 struct S {
     int member;
@@ -1333,19 +1348,6 @@ int main() {
 }
 // foo constructor
 // foo destructor
-```
-
----
-
-```cpp
-void test_rvalue_ref_arg(int&& x_ref_ref) {
-    PRINT_VALUE_CATEGORY(x_ref_ref); // lvalue!
-    PRINT_VALUE_CATEGORY(std::move(x_ref_ref)); // xvalue
-}
-
-int b = 1;
-test_rvalue_ref_arg(std::move(b));
-test_rvalue_ref_arg(1); // prvalue-to-xvalue conversion
 ```
 
 ---
