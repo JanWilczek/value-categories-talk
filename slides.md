@@ -13,6 +13,7 @@ export:
   timeout: 30000
   dark: false
   withClicks: false
+  perSlide: true
   withToc: false
 # https://sli.dev/features/drawing
 drawings:
