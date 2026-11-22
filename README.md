@@ -38,11 +38,20 @@ Then open <http://localhost:3030>.
 ```bash
 pnpm build                     # static site in dist/
 pnpm export                    # PDF export to slides-export.pdf
+pnpm export:clicks             # PDF export with one page per click step to slides-export-clicks.pdf
 ```
 
 `pnpm export` regenerates `slides-export.pdf`, so re-run it after changing the slides. The export options live in the `export:` block of `slides.md`'s headmatter: one page per slide, with all click animations revealed (`perSlide: true`, `withClicks: false`).
 
 Do not enable `withClicks`. With Slidev 53.1, it shrinks the slides on a black background and drops the last slides from the PDF.
+
+To get a PDF with every click step on its own page, use `pnpm export:clicks` instead. It runs [`scripts/export-with-clicks.mjs`](./scripts/export-with-clicks.mjs), which:
+
+- starts its own Slidev server on port 3031 (override with `SLIDEV_EXPORT_PORT`),
+- steps through the deck to find every click state,
+- renders each state through Slidev's print view and merges the pages into one PDF.
+
+It takes about 5 minutes. Pass a different output file with `pnpm export:clicks my-file.pdf`. The script relies on Slidev's internal print URLs, so check it still works after upgrading Slidev.
 
 ## Compiling the snippets
 
