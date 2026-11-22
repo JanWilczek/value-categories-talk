@@ -28,3 +28,5 @@ https://godbolt.org/z/xc44Pzaq8
 tc_move implementation and examples
 https://godbolt.org/z/8ddKsY894
 
+my_invoke with std::forward
+https://godbolt.org/z/a5WW9v5Ys
